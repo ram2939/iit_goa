@@ -47,9 +47,12 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   cloud_firestore: ^3.1.5
   flutter_svg: ^1.0.0
-  swipe_to: 0.0.1+8
   animated_text_kit: ^4.2.1
   intl: ^0.17.0
+  folding_cell: ^1.0.2
+  http: ^0.13.4
+  firebase_core: ^1.11.0
+  fluttertoast: ^8.0.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

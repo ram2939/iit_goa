@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hackathon/Screens/vipLogin.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'Screens/homePage.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+    (_) {
+      runApp(
+        MyApp(),
+      );
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,6 @@ class MyApp extends StatelessWidget {
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
-
   Future<Future> showFrontmanDialog(BuildContext ctx) async {
     return showDialog(
       context: ctx,
@@ -49,7 +56,7 @@ class LoginPage extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.all(15.0),
                   child: Text(
-                    "Password",
+                    "FRONTMAN",
                     style: TextStyle(color: Colors.white, fontFamily: font),
                   ),
                 ),
@@ -117,11 +124,13 @@ class LoginPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: const Color(accent),
+          backgroundColor: const Color(background),
           centerTitle: true,
           title: const Text(
             "SQUID GAME",
             style: TextStyle(
+              fontSize: 38,
+              color: Color(accent),
               fontFamily: 'Game Of Squids',
             ),
           ),

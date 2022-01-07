@@ -17,4 +17,13 @@ class Worker {
       address: doc['address'],
     );
   }
+
+  factory Worker.fromJson(Map<String, dynamic> json) {
+    return Worker(
+        name: json['name'],
+        dob: json['dob'],
+        address: json['address'],
+        occupation: json['occupation'],
+        job: "None");
+  }
 }

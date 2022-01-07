@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'homePage.dart';
 
-class VIPLogin extends StatelessWidget {
+class VIPLogin extends StatefulWidget {
   const VIPLogin({Key? key}) : super(key: key);
+
+  @override
+  State<VIPLogin> createState() => _VIPLoginState();
+}
+
+class _VIPLoginState extends State<VIPLogin> {
+  final CollectionReference _passwords_ref =
+      FirebaseFirestore.instance.collection("vipPassword");
 
   Future<Future> showVIPDialog(BuildContext ctx, String name) async {
     return showDialog(
@@ -53,19 +63,28 @@ class VIPLogin extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        // if (controller.text == "squid123") {
-                        if (true) {
-                          while (Navigator.canPop(ctx)) {
-                            Navigator.pop(ctx);
+                      onPressed: () async {
+                        final snapshots = await _passwords_ref.get();
+                        // snapshots.forEach((element) {});
+                        for (var i in snapshots.docs) {
+                          if (name == i['name'] &&
+                              controller.text == i['password']) {
+                            Fluttertoast.showToast(
+                              msg: "Welcome VIP $name",
+                              toastLength: Toast.LENGTH_LONG,
+                              fontSize: 16.0,
+                            );
+                            while (Navigator.canPop(ctx)) {
+                              Navigator.pop(ctx);
+                            }
+                            Navigator.of(ctx).pop();
+                            Navigator.push(
+                              ctx,
+                              MaterialPageRoute(
+                                builder: (context) => const HomePage(),
+                              ),
+                            );
                           }
-                          Navigator.of(ctx).pop();
-                          Navigator.push(
-                            ctx,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
                         }
                       },
                       child: const Text(
@@ -89,7 +108,18 @@ class VIPLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: const Color(background),
+          title: const Text(
+            "VIP",
+            style: TextStyle(
+              fontSize: 36,
+              color: Color(accent),
+              fontFamily: 'Game Of Squids',
+            ),
+          ),
+        ),
         body: GridView.count(
           primary: false,
           padding: const EdgeInsets.all(20),

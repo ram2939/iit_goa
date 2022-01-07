@@ -30,9 +30,20 @@ class Player {
         dob: doc['dob'],
         occupation: doc['occupation'],
         address: doc['address'],
-        debt: double.tryParse(doc['debt']));
+        debt: double.tryParse(doc['debt'].toString()));
   }
 
+  factory Player.fromJson(Map<String, dynamic> json) {
+    return Player(
+        name: json['name'],
+        dob: json['dob'],
+        address: json['address'],
+        occupation: json['occupation'],
+        debt: double.tryParse(json['debt'].toString()),
+        isAlive: true,
+        currentBet: 0,
+        nextGame: 1);
+  }
   void kill() {
     isAlive = false;
   }

@@ -86,12 +86,12 @@ packages:
     source: hosted
     version: "1.2.0"
   firebase_core:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.6"
+    version: "1.11.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -135,6 +135,34 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct dev"
+    description:
+      name: fluttertoast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "8.0.8"
+  folding_cell:
+    dependency: "direct dev"
+    description:
+      name: folding_cell
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  http:
+    dependency: "direct dev"
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.4"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   intl:
     dependency: "direct dev"
     description:
@@ -238,13 +266,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  swipe_to:
-    dependency: "direct dev"
-    description:
-      name: swipe_to
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.1+8"
   term_glyph:
     dependency: transitive
     description:

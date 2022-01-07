@@ -16,6 +16,15 @@ class Game {
     this.name,
     this.uuid,
   });
-
+  factory Game.fromJson(Map<String, dynamic> json) {
+    return Game(
+      uuid: json['uuid'],
+      name: json['name'],
+      gameNo: json['game_no'],
+      description: json['description'],
+      died: [],
+      entered: [],
+    );
+  }
   static fromDocument(DocumentSnapshot doc) {}
 }
