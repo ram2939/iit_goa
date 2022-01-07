@@ -11,11 +11,12 @@ class Repository {
   static final List<Game> games = [];
   static final CollectionReference _players_ref =
       FirebaseFirestore.instance.collection("players");
-  static final CollectionReference _workers_ref =
+  static final CollectionReference workers_ref =
       FirebaseFirestore.instance.collection("workers");
   static final CollectionReference _games_ref =
       FirebaseFirestore.instance.collection("games");
-
+  static final CollectionReference pass =
+      FirebaseFirestore.instance.collection("vipPassword");
   static String _url = 'https://hackoverflow-cepheus.herokuapp.com';
 
   static Future<void> fetchData() async {
@@ -24,7 +25,7 @@ class Repository {
       players.add(Player.fromDocument(d));
     }
 
-    final data2 = await _workers_ref.get();
+    final data2 = await workers_ref.get();
     for (var d in data2.docs) {
       workers.add(Worker.fromDocument(d));
     }
@@ -50,7 +51,13 @@ class Repository {
     final data = (json.decode(result.body))['rows'];
     for (var row in data) {
       workers.add(Worker.fromJson(row));
-      await _workers_ref.add(row);
+
+      await workers_ref.add({
+        'name': row['name'],
+        'dob': row['dob'],
+        'address': row['address'],
+        'occupation': row['occupation']
+      });
     }
   }
 

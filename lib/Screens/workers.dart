@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:hackathon/models/worker.dart';
 import 'package:folding_cell/folding_cell.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../repo.dart';
 
@@ -20,6 +23,7 @@ class _WorkersState extends State<Workers> {
   List<Worker> searchResults = [];
   bool search = false;
   final TextEditingController _controller = TextEditingController();
+
   @override
   void initState() {
     all = Repository.workers;
@@ -27,32 +31,54 @@ class _WorkersState extends State<Workers> {
   }
 
   Widget front(GlobalKey<SimpleFoldingCellState> key, Worker i) {
+    List<String> jobs = ["Manager", "Guard", "Utility", "None"];
+    int index = all.indexOf(i);
     return Container(
-      color: Color(accent),
+      color: const Color(accent),
       alignment: Alignment.center,
-      child: Stack(
+      child: Column(
         children: <Widget>[
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              i.name ?? "",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-                fontFamily: font,
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            i.name ?? "",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+              fontFamily: font,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          Positioned(
-              right: 10,
-              bottom: 5,
-              child: IconButton(
-                  onPressed: () => key.currentState?.toggleFold(),
-                  icon: Icon(
-                    Icons.double_arrow,
-                    color: Colors.white,
-                  )))
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            // mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: jobs.map((e) {
+              if (e == i.job) {
+                return Chip(
+                    backgroundColor: Colors.grey,
+                    label: Text(e,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                        )));
+              } else {
+                return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        all[index].job = e;
+                      });
+                    },
+                    child: Chip(label: Text(e)));
+              }
+            }).toList(),
+          ),
+          IconButton(
+            onPressed: () => key.currentState?.toggleFold(),
+            icon: const Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
     );
@@ -60,40 +86,72 @@ class _WorkersState extends State<Workers> {
 
   Widget _buildInnerWidget(GlobalKey<SimpleFoldingCellState> key, Worker i) {
     return Container(
-      color: Color(accent),
-      padding: EdgeInsets.only(top: 10),
-      child: Stack(
+      color: const Color(accent),
+      padding: const EdgeInsets.only(
+        top: 10,
+        left: 12,
+        right: 12,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Align(
+          Container(
             alignment: Alignment.topCenter,
             child: Text(
               i.name ?? " ",
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
+                fontFamily: font,
                 fontSize: 22.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Align(
+          Text(
+            i.job ?? "",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: font,
+            ),
+          ),
+          Container(
             alignment: Alignment.center,
             child: Text(
               i.address ?? "",
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
-                fontSize: 40.0,
+                fontSize: 18.0,
               ),
             ),
           ),
-          Positioned(
-              right: 10,
-              bottom: 5,
-              child: IconButton(
-                  onPressed: () => key.currentState?.toggleFold(),
-                  icon: Icon(
-                    Icons.double_arrow,
+          SizedBox(
+            width: SizeConfig.safeBlockHorizontal * 90,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "DOB: ${i.dob}\nOccupation: ${i.occupation}",
+                  style: const TextStyle(
                     color: Colors.white,
-                  ))),
+                    fontSize: 18.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            // right: 10,
+            // bottom: 5,
+            child: IconButton(
+              onPressed: () => key.currentState?.toggleFold(),
+              icon: const Icon(
+                Icons.keyboard_arrow_up,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -112,26 +170,47 @@ class _WorkersState extends State<Workers> {
           child: TextField(controller: _controller),
         ),
         Expanded(
-          // height: SizeConfig.safeBlockVertical * 80,
-          child: ListView.builder(
-            itemCount: (search ? searchResults.length : all.length),
-            itemBuilder: (BuildContext context, int index) {
-              Worker i = search ? searchResults[index] : all[index];
-              final _foldingCellKey = GlobalKey<SimpleFoldingCellState>();
+          child: StreamBuilder<QuerySnapshot>(
+              stream: Repository.workers_ref.snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
 
-              return SimpleFoldingCell.create(
-                key: _foldingCellKey,
-                frontWidget: front(_foldingCellKey, i),
-                innerWidget: _buildInnerWidget(_foldingCellKey, i),
-                cellSize: Size(MediaQuery.of(context).size.width, 140),
-                padding: EdgeInsets.all(15),
-                animationDuration: Duration(milliseconds: 300),
-                borderRadius: 10,
-                onOpen: () => print('cell opened'),
-                onClose: () => print('cell closed'),
-              );
-            },
-          ),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text("Loading");
+                }
+                all = snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  return Worker(
+                      name: data['name'],
+                      address: data['address'],
+                      dob: data['dob'],
+                      occupation: data['occupation'],
+                      job: "None");
+                }).toList();
+
+                return ListView.builder(
+                  itemCount: (search ? searchResults.length : all.length),
+                  itemBuilder: (BuildContext context, int index) {
+                    Worker i = search ? searchResults[index] : all[index];
+                    final _foldingCellKey = GlobalKey<SimpleFoldingCellState>();
+
+                    return SimpleFoldingCell.create(
+                      key: _foldingCellKey,
+                      frontWidget: front(_foldingCellKey, i),
+                      innerWidget: _buildInnerWidget(_foldingCellKey, i),
+                      cellSize: Size(MediaQuery.of(context).size.width, 140),
+                      padding: const EdgeInsets.all(15),
+                      animationDuration: const Duration(milliseconds: 300),
+                      borderRadius: 10,
+                      onOpen: () => print('cell opened'),
+                      onClose: () => print('cell closed'),
+                    );
+                  },
+                );
+              }),
         )
       ]),
     ));

@@ -108,6 +108,14 @@ class _HomePageState extends State<HomePage> {
                     height: 25,
                   ),
                   GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Workers(),
+                        ),
+                      );
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         image: const DecorationImage(
@@ -186,19 +194,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Workers(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.next_plan,
-                    ),
-                  )
                 ],
               ),
             ),

@@ -10,7 +10,7 @@ class Worker {
   Worker({this.name, this.dob, this.occupation, this.address, this.job});
   static fromDocument(DocumentSnapshot doc) {
     return Worker(
-      job: doc['job'],
+      job: doc['job'] ?? "None",
       name: doc['name'],
       dob: doc['dob'],
       occupation: doc['occupation'],
