@@ -131,6 +131,7 @@ class Repository {
     for (var i in data.docs) {
       var x = i.data() as Map<String, dynamic>;
       x['gamesPlayed'] = (x['gamesPlayed'] ?? 0) + 1;
+      x['currentBet'] = 0;
       await playersRef.doc(i.id).update(x);
       aliveIds.add(i.id);
     }
@@ -235,6 +236,20 @@ class Repository {
     return data.docs.isNotEmpty;
   }
 
+  static Future<void> transferMoneyToFrontman(int amount) async {
+    final data = await frontmanRef.get();
+    String id = data.docs.first.id;
+    final d = data.docs.first.data() as Map<String, dynamic>;
+    d['wallet'] = (d['wallet'] ?? 0) + amount;
+    frontmanRef.doc(id).update(d);
+  }
+
+  static Future<double> getFrontmanBalance() async {
+    final data = await frontmanRef.get();
+    final d = data.docs.first.data() as Map<String, dynamic>;
+    return double.parse(d['wallet'].toString());
+  }
+
   static Future<void> generateExcel() async {
     //Creating a workbook.
     final Workbook workbook = Workbook();
@@ -251,10 +266,16 @@ class Repository {
     sheet.getRangeByName("F1").setText("Games Played");
     sheet.getRangeByName("G1").setText("Games Won");
     sheet.getRangeByName("H1").setText("Win Percentage");
-
+    int alive = 0;
     final data = await playersRef.get();
-    for (var i = 1; i <= data.docs.length; i++) {
+    var i;
+    var winner = "";
+    for (i = 1; i <= data.docs.length; i++) {
       var d = data.docs[i - 1].data() as Map<String, dynamic>;
+      if (d['isAlive'] == true) {
+        alive++;
+        winner = d['name'];
+      }
       sheet.getRangeByIndex(i, 1).setText(d['dob']);
       sheet.getRangeByIndex(i, 2).setText(d['occupation']);
       sheet.getRangeByIndex(i, 3).setText(d['address']);
@@ -263,6 +284,12 @@ class Repository {
       sheet.getRangeByIndex(i, 6).setNumber(1.0 * (d['gamesPlayed'] ?? 0));
       sheet.getRangeByIndex(i, 7).setNumber(
           1.0 * (d['gamesPlayed'] ?? 0 / ((d['gamesPlayed'] ?? 0) + 1)));
+
+      if (alive == 1) {
+        sheet.getRangeByIndex(i, 1).setText("Winner: $winner");
+      } else {
+        sheet.getRangeByIndex(i, 1).setText("No Winner yet");
+      }
       Directory? directory = await getExternalStorageDirectory();
       String appDocumentsPath = directory!.path; // 2
       String filePath = '$appDocumentsPath/SquidGame.xlsx'; // 3

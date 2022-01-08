@@ -27,6 +27,7 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
   int totalBet = 0;
   final TextEditingController _controller = TextEditingController();
   int status = 0;
+  int deadBet = 0;
   void showBlockingDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -72,6 +73,7 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
                     value: status == 1 ? (i.isAlive ?? true) : true,
                     onChanged: status == 1
                         ? (value) async {
+                            deadBet += i.currentBet;
                             setState(() {
                               i.isAlive = value;
                             });
@@ -184,6 +186,12 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    status = widget.g!.status ?? 0;
+    super.initState();
   }
 
   @override
@@ -369,7 +377,7 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
                     ),
                     color: status == 0
                         ? Colors.green
-                        : (status == 1 ? Colors.red : Color(accent)),
+                        : (status == 1 ? Colors.red : const Color(accent)),
                   ),
                   onPressed: () async {
                     if (status == 0) {
@@ -385,6 +393,36 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
                       setState(() {
                         status = 2;
                       });
+                      if (totalBet == 0) {
+                        await Repository.transferMoneyToFrontman(deadBet);
+                      }
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: Container(
+                              color: const Color(background),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              alignment: Alignment.center,
+                              height: SizeConfig.safeBlockVertical * 40,
+                              width: SizeConfig.safeBlockHorizontal * 40,
+                              child: Center(
+                                child: Text(
+                                  totalBet == 0
+                                      ? "NO VIP won....\nTransferring the winning amount to the Frontman."
+                                      : "Transferring the money to VIPs",
+                                  style: const TextStyle(
+                                    fontFamily: font,
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     }
                   },
                 ),
