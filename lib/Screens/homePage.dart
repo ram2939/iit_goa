@@ -7,6 +7,7 @@ import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:intl/intl.dart';
 
+import '../repo.dart';
 import 'GamesPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,7 +23,8 @@ class _HomePageState extends State<HomePage> {
   var f = NumberFormat("###,###", "en_US");
   @override
   void initState() {
-    // Repository.getData();
+    if (widget.alive == 0) Repository.getData();
+    // Repository.generateExcel();
     super.initState();
   }
 

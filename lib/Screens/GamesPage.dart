@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/Screens/FrontmanStatsScreen.dart';
 import 'package:hackathon/Screens/particularGameScreen.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +7,6 @@ import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:hackathon/models/game.dart';
 import 'package:hackathon/repo.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'vipGame.dart';
 
 class GamesScreen extends StatelessWidget {
   const GamesScreen({Key? key}) : super(key: key);
@@ -29,7 +28,7 @@ class GamesScreen extends StatelessWidget {
           ),
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: Repository.games_ref.orderBy("game_no").snapshots(),
+          stream: Repository.gamesRef.orderBy("game_no").snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               Fluttertoast.showToast(
@@ -47,7 +46,12 @@ class GamesScreen extends StatelessWidget {
                     name: data['name'],
                     uuid: data['uuid'],
                     description: data['description'],
-                    gameNo: int.tryParse(data['game_no'].toString()));
+                    gameNo: int.tryParse(data['game_no'].toString()),
+                    status: data['status'] ?? 0,
+                    entered: data['entered'],
+                    enteredCount: data['entered_count'] ?? 0,
+                    survived: data['survived'],
+                    survivedCount: data['survived_count'] ?? 0);
               }).toList();
             }
 
@@ -57,13 +61,23 @@ class GamesScreen extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       print(all[index].name);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ParticularGameScreen(g: all[index]),
-                        ),
-                      );
+                      if (all[index].status == 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ParticularGameScreen(g: all[index]),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FrontmanStatsPage(g: all[index]),
+                          ),
+                        );
+                      }
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -74,7 +88,9 @@ class GamesScreen extends StatelessWidget {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(accent),
+                        color: all[index].status == 2
+                            ? Colors.grey
+                            : const Color(accent),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: const [
                           BoxShadow(

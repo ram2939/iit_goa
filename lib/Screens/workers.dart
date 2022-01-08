@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/Screens/addWorker.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:hackathon/models/worker.dart';
@@ -16,7 +17,6 @@ class Workers extends StatefulWidget {
 
 class _WorkersState extends State<Workers> {
   List<Worker> all = [];
-  List<Worker> searchResults = [];
   bool search = false;
   final TextEditingController _controller = TextEditingController();
 
@@ -92,18 +92,37 @@ class _WorkersState extends State<Workers> {
         right: 12,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             alignment: Alignment.topCenter,
-            child: Text(
-              i.name ?? " ",
-              style: const TextStyle(
-                color: Colors.white,
-                fontFamily: font,
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  i.name ?? " ",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: font,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.white),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddWorker(w: i)));
+                    }),
+                IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.white),
+                    onPressed: () async {
+                      await Repository.deleteWorker(i.name ?? "");
+                    })
+              ],
             ),
           ),
           Text(
@@ -127,7 +146,7 @@ class _WorkersState extends State<Workers> {
           SizedBox(
             width: SizeConfig.safeBlockHorizontal * 90,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   "DOB: ${i.dob}\nOccupation: ${i.occupation}",
@@ -159,9 +178,21 @@ class _WorkersState extends State<Workers> {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddWorker(),
+                ),
+              );
+            },
+          ),
+        ],
         centerTitle: true,
         backgroundColor: const Color(background),
         title: const Text(
@@ -234,7 +265,7 @@ class _WorkersState extends State<Workers> {
         ),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-              stream: Repository.workers_ref.snapshots(),
+              stream: Repository.workersRef.snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   Fluttertoast.showToast(
@@ -283,6 +314,6 @@ class _WorkersState extends State<Workers> {
               }),
         )
       ]),
-    ));
+    );
   }
 }

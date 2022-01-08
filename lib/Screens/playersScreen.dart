@@ -6,6 +6,7 @@ import 'package:folding_cell/folding_cell.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../repo.dart';
+import 'addPlayer.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({Key? key}) : super(key: key);
@@ -160,6 +161,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddPlayer()));
+            },
+          ),
+        ],
         centerTitle: true,
         backgroundColor: const Color(background),
         title: const Text(
@@ -232,7 +242,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         ),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-              stream: Repository.players_ref.snapshots(),
+              stream: Repository.playersRef.snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   Fluttertoast.showToast(

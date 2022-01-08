@@ -181,6 +181,9 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
         child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Color(accent),
+        ),
         backgroundColor: const Color(background),
         title: Expanded(
           child: Text(
@@ -195,7 +198,7 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: Repository.players_ref.snapshots(),
+          stream: Repository.playersRef.snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               Fluttertoast.showToast(
@@ -362,8 +365,7 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
                       setState(() {
                         status = 1;
                       });
-                    }
-                    if (status == 1) {
+                    } else if (status == 1) {
                       await Repository.updateGameSurvived(
                           widget.g?.gameNo ?? 0);
                       setState(() {

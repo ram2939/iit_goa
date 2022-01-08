@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon/Screens/particularGameScreen.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
@@ -8,6 +7,7 @@ import 'package:hackathon/repo.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'vipGame.dart';
+import 'vipStats.dart';
 
 class VipGamesScreen extends StatelessWidget {
   final String name;
@@ -30,7 +30,7 @@ class VipGamesScreen extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: Repository.games_ref.orderBy("game_no").snapshots(),
+        stream: Repository.gamesRef.orderBy("game_no").snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             Fluttertoast.showToast(
@@ -49,7 +49,9 @@ class VipGamesScreen extends StatelessWidget {
                   uuid: data['uuid'],
                   description: data['description'],
                   gameNo: int.tryParse(data['game_no'].toString()),
-                  status: data['status'] ?? 0);
+                  status: data['status'] ?? 0,
+                  survivedCount: data['survived_count'] ?? 0,
+                  enteredCount: data['entered_count'] ?? 0);
             }).toList();
           }
           int x = all.indexWhere((element) => element.status == 1);
@@ -189,7 +191,8 @@ class VipGamesScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => VIPGame(g: all[index]),
+                                  builder: (context) =>
+                                      VipGameStats(g: all[index]),
                                 ),
                               );
                               // Navigator.push(

@@ -12,8 +12,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../repo.dart';
 
 class VIPGame extends StatefulWidget {
-  Game? g;
-  VIPGame({Key? key, required this.g}) : super(key: key);
+  final Game? g;
+  const VIPGame({Key? key, required this.g}) : super(key: key);
 
   @override
   _VIPGameState createState() => _VIPGameState();
@@ -104,6 +104,7 @@ class _VIPGameState extends State<VIPGame> {
                       onPressed: () async {
                         await Repository.updatePlayerBet(
                             name, int.parse(controller.text));
+                        Navigator.of(context).pop();
                         print("Bet on $name");
                       },
                       child: const Text(
@@ -308,7 +309,7 @@ class _VIPGameState extends State<VIPGame> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: Repository.players_ref.snapshots(),
+          stream: Repository.playersRef.snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               Fluttertoast.showToast(
@@ -448,28 +449,6 @@ class _VIPGameState extends State<VIPGame> {
                     },
                   ),
                 ),
-                // TextButton(
-                //   child: Container(
-                //     margin:
-                //         const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
-                //     height: SizeConfig.safeBlockVertical * 8,
-                //     width: SizeConfig.screenWidth,
-                //     child: Center(
-                //       child: Text(!status ? "Start" : "End",
-                //           style: const TextStyle(
-                //             color: Color(background),
-                //             fontFamily: font,
-                //             fontSize: 25,
-                //           )),
-                //     ),
-                //     color: !status ? Colors.green : Colors.red,
-                //   ),
-                //   onPressed: () {
-                //     setState(() {
-                //       status = !status;
-                //     });
-                //   },
-                // ),
               ]);
             } else {
               return Container();

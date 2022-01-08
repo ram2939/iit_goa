@@ -31,7 +31,8 @@ class Player {
         dob: doc['dob'],
         occupation: doc['occupation'],
         address: doc['address'],
-        debt: double.tryParse(doc['debt'].toString()));
+        debt: double.tryParse(doc['debt'].toString()),
+        gamesPlayed: doc['gamesPlayed'] ?? 0);
   }
 
   factory Player.fromJson(Map<String, dynamic> json) {

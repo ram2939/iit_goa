@@ -5,8 +5,6 @@ import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'homePage.dart';
-
 class VIPLogin extends StatefulWidget {
   const VIPLogin({Key? key}) : super(key: key);
 
