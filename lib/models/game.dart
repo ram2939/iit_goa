@@ -6,18 +6,21 @@ class Game {
   final String? name;
   final String? description;
   final int? status;
+  final int? entered_count;
+  final int? survived_count;
   List<String>? died = [];
   List<String>? entered = [];
 
-  Game({
-    this.entered,
-    this.died,
-    this.description,
-    this.gameNo,
-    this.name,
-    this.status,
-    this.uuid,
-  });
+  Game(
+      {this.entered,
+      this.died,
+      this.description,
+      this.gameNo,
+      this.name,
+      this.status,
+      this.uuid,
+      this.entered_count,
+      this.survived_count});
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
       uuid: json['uuid'],

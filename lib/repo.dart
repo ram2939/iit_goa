@@ -42,6 +42,7 @@ class Repository {
     final data = (json.decode(result.body))['rows'];
     for (var row in data) {
       players.add(Player.fromJson(row));
+      row['isAlive'] = true;
       await players_ref.add(row);
     }
   }
@@ -121,6 +122,9 @@ class Repository {
     final data = await players_ref.where('isAlive', isEqualTo: true).get();
     List<String> alive_ids = [];
     for (var i in data.docs) {
+      var x = i.data() as Map<String, dynamic>;
+      x['gamesPlayed'] = x['gamesPlayed'] ?? 0 + 1;
+      await players_ref.doc(i.id).update(x);
       alive_ids.add(i.id);
     }
 
@@ -135,4 +139,6 @@ class Repository {
     final data = await players_ref.where('isAlive', isEqualTo: true).get();
     return data.docs.length;
   }
+
+  static Future<void> generateExcel() async {}
 }

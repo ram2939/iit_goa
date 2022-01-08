@@ -10,12 +10,12 @@ class Player {
   bool? isAlive;
   int currentBet = 0;
   int? nextGame;
-
+  int? gamesPlayed = 0;
   Player({
     this.name,
     required this.currentBet,
     this.nextGame,
-    // this.id,
+    this.gamesPlayed,
     this.dob,
     this.occupation,
     this.address,

@@ -54,6 +54,7 @@ dev_dependencies:
   firebase_core: ^1.11.0
   fluttertoast: ^8.0.8
   syncfusion_flutter_sliders: ^19.4.41
+  excel: ^1.1.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
