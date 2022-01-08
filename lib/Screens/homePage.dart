@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/Screens/playersScreen.dart';
+import 'package:hackathon/Screens/vipGamePage.dart';
 import 'package:hackathon/Screens/workers.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:intl/intl.dart';
 
-import '../repo.dart';
+import 'GamesPage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final int alive;
+  const HomePage({Key? key, required this.alive}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -16,11 +19,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int total = 100;
-  int alive = 30;
   var f = NumberFormat("###,###", "en_US");
   @override
   void initState() {
-    Repository.getData();
+    // Repository.getData();
     super.initState();
   }
 
@@ -30,10 +32,16 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: IconButton(
-            icon: const Icon(Icons.games),
-            onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const GamesScreen(),
+              ),
+            );
+          },
+          child: const Icon(
+            Icons.games,
           ),
         ),
         appBar: AppBar(
@@ -63,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                       repeatForever: true,
                       animatedTexts: [
                         ColorizeAnimatedText(
-                          'Stake: \$${f.format((total - alive) * 10000000)}',
+                          'Stake: \$${f.format((total - widget.alive) * 10000000)}',
                           textStyle: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -91,8 +99,8 @@ class _HomePageState extends State<HomePage> {
                         repeatForever: true,
                         animatedTexts: [
                           FadeAnimatedText("Total: $total"),
-                          FadeAnimatedText("Alive: $alive"),
-                          FadeAnimatedText("Dead: ${total - alive}"),
+                          FadeAnimatedText("Alive: ${widget.alive}"),
+                          FadeAnimatedText("Dead: ${total - widget.alive}"),
                         ],
                       ),
                     ),
@@ -157,6 +165,14 @@ class _HomePageState extends State<HomePage> {
                     height: 30,
                   ),
                   GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PlayerScreen(),
+                        ),
+                      );
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         image: const DecorationImage(

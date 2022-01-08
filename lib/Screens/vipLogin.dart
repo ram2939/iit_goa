@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/Screens/vipGamePage.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -81,7 +82,9 @@ class _VIPLoginState extends State<VIPLogin> {
                             Navigator.push(
                               ctx,
                               MaterialPageRoute(
-                                builder: (context) => const HomePage(),
+                                builder: (context) => VipGamesScreen(
+                                  name: name,
+                                ),
                               ),
                             );
                           }

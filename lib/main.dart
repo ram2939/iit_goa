@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hackathon/repo.dart';
 import 'Screens/homePage.dart';
 
 void main() async {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Squid Game',
       theme: ThemeData(
         primaryColor: const Color(background),
         accentColor: const Color(accent),
@@ -85,7 +86,8 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        int alive = await Repository.getAlive();
                         // if (controller.text == "squid123") {
                         if (true) {
                           while (Navigator.canPop(ctx)) {
@@ -95,7 +97,7 @@ class LoginPage extends StatelessWidget {
                           Navigator.push(
                             ctx,
                             MaterialPageRoute(
-                              builder: (context) => const HomePage(),
+                              builder: (context) => HomePage(alive: alive),
                             ),
                           );
                         }

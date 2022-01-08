@@ -5,6 +5,7 @@ class Game {
   final int? gameNo;
   final String? name;
   final String? description;
+  final int? status;
   List<String>? died = [];
   List<String>? entered = [];
 
@@ -14,6 +15,7 @@ class Game {
     this.description,
     this.gameNo,
     this.name,
+    this.status,
     this.uuid,
   });
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -22,9 +24,20 @@ class Game {
       name: json['name'],
       gameNo: json['game_no'],
       description: json['description'],
+      status: 0,
       died: [],
       entered: [],
     );
   }
-  static fromDocument(DocumentSnapshot doc) {}
+  static fromDocument(DocumentSnapshot json) {
+    return Game(
+      uuid: json['uuid'],
+      name: json['name'],
+      gameNo: json['game_no'],
+      description: json['description'],
+      status: 0,
+      died: [],
+      entered: [],
+    );
+  }
 }

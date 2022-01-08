@@ -1,77 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
-import 'package:hackathon/models/worker.dart';
+import 'package:hackathon/models/player.dart';
 import 'package:folding_cell/folding_cell.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../repo.dart';
 
-class Workers extends StatefulWidget {
-  const Workers({Key? key}) : super(key: key);
+class PlayerScreen extends StatefulWidget {
+  const PlayerScreen({Key? key}) : super(key: key);
 
   @override
-  _WorkersState createState() => _WorkersState();
+  _PlayerScreenState createState() => _PlayerScreenState();
 }
 
-class _WorkersState extends State<Workers> {
-  List<Worker> all = [];
-  List<Worker> searchResults = [];
+class _PlayerScreenState extends State<PlayerScreen> {
+  List<Player> all = [];
   bool search = false;
   final TextEditingController _controller = TextEditingController();
 
-  @override
-  void initState() {
-    all = Repository.workers;
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   all = Repository.players;
+  //   super.initState();
+  // }
 
-  Widget front(GlobalKey<SimpleFoldingCellState> key, Worker i) {
-    List<String> jobs = ["Manager", "Guard", "Utility", "None"];
+  Widget front(GlobalKey<SimpleFoldingCellState> key, Player i) {
     int index = all.indexOf(i);
     return Container(
       color: const Color(accent),
       alignment: Alignment.center,
       child: Column(
         children: <Widget>[
-          Text(
-            i.name ?? "",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
-              fontFamily: font,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: jobs.map((e) {
-              if (e == i.job) {
-                return Chip(
-                    backgroundColor: Colors.grey,
-                    label: Text(e,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                        )));
-              } else {
-                return GestureDetector(
-                  onTap: () {
-                    Repository.updateWorker(i.name ?? "", e);
-                    setState(() {
-                      all[index].job = e;
-                    });
-                  },
-                  child: Chip(
-                    label: Text(e),
-                  ),
-                );
-              }
-            }).toList(),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                i.name ?? "",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontFamily: font,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Transform.scale(
+                scale: 1.2,
+                child: Switch(
+                    activeColor: Colors.green,
+                    inactiveTrackColor: Colors.red,
+                    value: i.isAlive ?? true,
+                    onChanged: (value) async {
+                      setState(() {
+                        i.isAlive = value;
+                      });
+                      Repository.updatePlayer(i.name ?? " ", value);
+                    }),
+              ),
+            ],
           ),
           IconButton(
+            alignment: Alignment.bottomCenter,
             onPressed: () => key.currentState?.toggleFold(),
             icon: const Icon(
               Icons.keyboard_arrow_down,
@@ -83,11 +72,10 @@ class _WorkersState extends State<Workers> {
     );
   }
 
-  Widget _buildInnerWidget(GlobalKey<SimpleFoldingCellState> key, Worker i) {
+  Widget _buildInnerWidget(GlobalKey<SimpleFoldingCellState> key, Player i) {
     return Container(
       color: const Color(accent),
       padding: const EdgeInsets.only(
-        top: 10,
         left: 12,
         right: 12,
       ),
@@ -96,23 +84,33 @@ class _WorkersState extends State<Workers> {
         children: [
           Container(
             alignment: Alignment.topCenter,
-            child: Text(
-              i.name ?? " ",
-              style: const TextStyle(
-                color: Colors.white,
-                fontFamily: font,
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  i.name ?? " ",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: font,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
+                CircleAvatar(
+                  backgroundColor:
+                      i.isAlive ?? true ? Colors.green : Colors.red,
+                  radius: 5,
+                )
+              ],
             ),
           ),
-          Text(
-            i.job ?? "",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontFamily: font,
+          Chip(
+            label: Text(
+              "\$ " + i.debt!.toStringAsFixed(1),
+              style: const TextStyle(fontFamily: font),
             ),
+            backgroundColor: Colors.yellow,
           ),
           Container(
             alignment: Alignment.center,
@@ -165,7 +163,7 @@ class _WorkersState extends State<Workers> {
         centerTitle: true,
         backgroundColor: const Color(background),
         title: const Text(
-          'WORKERS',
+          'PLAYERS',
           style: TextStyle(
             fontFamily: font,
             color: Color(accent),
@@ -234,7 +232,7 @@ class _WorkersState extends State<Workers> {
         ),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-              stream: Repository.workers_ref.snapshots(),
+              stream: Repository.players_ref.snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   Fluttertoast.showToast(
@@ -248,12 +246,15 @@ class _WorkersState extends State<Workers> {
                   all = snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
                         document.data()! as Map<String, dynamic>;
-                    return Worker(
+                    return Player(
                         name: data['name'],
                         address: data['address'],
                         dob: data['dob'],
                         occupation: data['occupation'],
-                        job: data['job'] ?? "None");
+                        isAlive: data['isAlive'] ?? true,
+                        debt: data['debt'],
+                        currentBet: data['currentBet'] ?? 0,
+                        nextGame: data['nextGame'] ?? 1);
                   }).toList();
                   if (search) {
                     all = (all.where((element) =>
@@ -264,14 +265,15 @@ class _WorkersState extends State<Workers> {
                 return ListView.builder(
                   itemCount: all.length,
                   itemBuilder: (BuildContext context, int index) {
-                    Worker i = all[index];
+                    Player i = all[index];
                     final _foldingCellKey = GlobalKey<SimpleFoldingCellState>();
 
                     return SimpleFoldingCell.create(
                       key: _foldingCellKey,
                       frontWidget: front(_foldingCellKey, i),
                       innerWidget: _buildInnerWidget(_foldingCellKey, i),
-                      cellSize: Size(MediaQuery.of(context).size.width, 140),
+                      cellSize: Size(SizeConfig.screenWidth,
+                          SizeConfig.safeBlockVertical * 18),
                       padding: const EdgeInsets.all(15),
                       animationDuration: const Duration(milliseconds: 300),
                       borderRadius: 10,
