@@ -28,15 +28,16 @@ const kTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
   enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color(0xFFE256D3), width: 1.0),
+    borderSide: BorderSide(color: Color(accent), width: 1.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color(0xFFE256D3), width: 2.0),
+    borderSide: BorderSide(color: Color(accent), width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
 
 const background = 0xFF212529;
-const accent = 0xFFE256D3;
+const accent = 0xFFE83E7D;
+const accent2 = 0xFFFD287E;
 const font = 'Game Of Squids';

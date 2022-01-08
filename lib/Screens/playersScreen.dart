@@ -27,7 +27,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
   // }
 
   Widget front(GlobalKey<SimpleFoldingCellState> key, Player i) {
-    int index = all.indexOf(i);
     return Container(
       color: const Color(accent),
       alignment: Alignment.center,
@@ -49,7 +48,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 scale: 1.2,
                 child: Switch(
                     activeColor: Colors.green,
-                    inactiveTrackColor: Colors.red,
+                    inactiveTrackColor: const Color.fromRGBO(245, 118, 49, 1),
                     value: i.isAlive ?? true,
                     onChanged: (value) async {
                       setState(() {
@@ -74,6 +73,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Widget _buildInnerWidget(GlobalKey<SimpleFoldingCellState> key, Player i) {
+    final birthDate = DateTime(int.parse(i.dob!.substring(6)),
+        int.parse(i.dob!.substring(3, 5)), int.parse(i.dob!.substring(0, 2)));
+    final date = DateTime.now();
+    int age = date.difference(birthDate).inDays ~/ 365;
     return Container(
       color: const Color(accent),
       padding: const EdgeInsets.only(
@@ -102,7 +105,23 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   backgroundColor:
                       i.isAlive ?? true ? Colors.green : Colors.red,
                   radius: 5,
-                )
+                ),
+                Expanded(child: Container()),
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.white),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPlayer(w: i)));
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.white),
+                  onPressed: () async {
+                    await Repository.deleteWorker(i.name ?? "");
+                  },
+                ),
               ],
             ),
           ),
@@ -113,29 +132,22 @@ class _PlayerScreenState extends State<PlayerScreen> {
             ),
             backgroundColor: Colors.yellow,
           ),
-          Container(
-            alignment: Alignment.center,
+          SizedBox(
+            width: SizeConfig.safeBlockHorizontal * 90,
             child: Text(
-              i.address ?? "",
+              "${age}\n${i.occupation}",
               style: const TextStyle(
+                fontFamily: font,
                 color: Colors.white,
                 fontSize: 18.0,
               ),
             ),
           ),
-          SizedBox(
-            width: SizeConfig.safeBlockHorizontal * 90,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  "DOB: ${i.dob}\nOccupation: ${i.occupation}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ],
+          Text(
+            i.address ?? "",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
             ),
           ),
           Container(
@@ -264,6 +276,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         isAlive: data['isAlive'] ?? true,
                         debt: data['debt'],
                         currentBet: data['currentBet'] ?? 0,
+                        gamesPlayed: data['gamesPlayed'] ?? 0,
                         nextGame: data['nextGame'] ?? 1);
                   }).toList();
                   if (search) {
@@ -283,7 +296,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       frontWidget: front(_foldingCellKey, i),
                       innerWidget: _buildInnerWidget(_foldingCellKey, i),
                       cellSize: Size(SizeConfig.screenWidth,
-                          SizeConfig.safeBlockVertical * 18),
+                          SizeConfig.safeBlockVertical * 16),
                       padding: const EdgeInsets.all(15),
                       animationDuration: const Duration(milliseconds: 300),
                       borderRadius: 10,

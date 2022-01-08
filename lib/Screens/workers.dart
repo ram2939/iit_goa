@@ -109,19 +109,22 @@ class _WorkersState extends State<Workers> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                Expanded(child: Container()),
                 IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddWorker(w: i)));
-                    }),
+                  icon: const Icon(Icons.edit, color: Colors.white),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddWorker(w: i)));
+                  },
+                ),
                 IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.white),
-                    onPressed: () async {
-                      await Repository.deleteWorker(i.name ?? "");
-                    })
+                  icon: const Icon(Icons.delete, color: Colors.white),
+                  onPressed: () async {
+                    await Repository.deleteWorker(i.name ?? "");
+                  },
+                ),
               ],
             ),
           ),

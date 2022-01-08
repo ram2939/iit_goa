@@ -6,6 +6,7 @@ import 'package:hackathon/models/game.dart';
 import 'package:hackathon/repo.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../main.dart';
 import 'vipGame.dart';
 import 'vipStats.dart';
 
@@ -18,6 +19,22 @@ class VipGamesScreen extends StatelessWidget {
     List<Game> all = [];
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+              color: Color(accent),
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
+              // while (Navigator.canPop(context)) {
+              //   Navigator.pop(context);
+              // }
+              ;
+            },
+          )
+        ],
         centerTitle: true,
         backgroundColor: const Color(background),
         title: Text(
@@ -50,6 +67,8 @@ class VipGamesScreen extends StatelessWidget {
                   description: data['description'],
                   gameNo: int.tryParse(data['game_no'].toString()),
                   status: data['status'] ?? 0,
+                  entered: data['entered'] ?? [],
+                  survived: data['survived'] ?? [],
                   survivedCount: data['survived_count'] ?? 0,
                   enteredCount: data['entered_count'] ?? 0);
             }).toList();

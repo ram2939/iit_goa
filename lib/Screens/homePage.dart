@@ -7,6 +7,7 @@ import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:intl/intl.dart';
 
+import '../main.dart';
 import '../repo.dart';
 import 'GamesPage.dart';
 
@@ -47,6 +48,15 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
+              },
+            )
+          ],
           backgroundColor: const Color(accent),
           centerTitle: true,
           title: const Text(
@@ -93,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                     child: DefaultTextStyle(
                       style: const TextStyle(
                         fontSize: 30,
-                        color: Color(0xFFE256D3),
+                        color: Color(accent),
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Game Of Squids',
                       ),

@@ -12,6 +12,8 @@ class Repository {
   static final List<Player> players = [];
   static final List<Worker> workers = [];
   static final List<Game> games = [];
+  static final CollectionReference frontmanRef =
+      FirebaseFirestore.instance.collection("Frontman");
   static final CollectionReference playersRef =
       FirebaseFirestore.instance.collection("players");
   static final CollectionReference workersRef =
@@ -135,7 +137,7 @@ class Repository {
 
     var updatedData = result.docs[0].data();
     updatedData = updatedData as Map<String, dynamic>;
-    updatedData['surived'] = aliveIds;
+    updatedData['survived'] = aliveIds;
     updatedData['survived_count'] = aliveIds.length;
     updatedData['status'] = 2;
     await gamesRef.doc(id).update(updatedData);
@@ -175,17 +177,37 @@ class Repository {
     await workersRef.doc(id).delete();
   }
 
+  static Future<void> deletePlayer(String name) async {
+    final res = await playersRef.where("name", isEqualTo: name).get();
+    String id = res.docs[0].id;
+    await playersRef.doc(id).delete();
+  }
+
   static Future<void> addPlayer(String name, String dob, String address,
-      String occupation, double debt) async {
-    await playersRef.add({
-      'name': name,
-      'address': address,
-      'dob': dob,
-      'occupation': occupation,
-      'debt': debt,
-      'isAlive': true,
-      'gamesPlayed': 0,
-    });
+      String occupation, double debt, bool edit,
+      {String? oldName}) async {
+    if (!edit) {
+      await playersRef.add({
+        'name': name,
+        'address': address,
+        'dob': dob,
+        'occupation': occupation,
+        'debt': debt,
+        'isAlive': true,
+        'gamesPlayed': 0,
+      });
+    } else {
+      final result = await playersRef.where("name", isEqualTo: oldName).get();
+      await playersRef.doc(result.docs.first.id).update({
+        'name': name,
+        'address': address,
+        'dob': dob,
+        'occupation': occupation,
+        'debt': debt,
+        'isAlive': true,
+        'gamesPlayed': 0,
+      });
+    }
   }
 
   static Future<List<Player>> getPlayers(List<dynamic> ids) async {
@@ -206,6 +228,11 @@ class Repository {
       );
     }
     return p;
+  }
+
+  static Future<bool> checkFrontman(String password) async {
+    final data = await frontmanRef.where('password', isEqualTo: password).get();
+    return data.docs.isNotEmpty;
   }
 
   static Future<void> generateExcel() async {

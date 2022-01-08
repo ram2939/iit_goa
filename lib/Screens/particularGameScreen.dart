@@ -9,11 +9,13 @@ import 'package:hackathon/models/player.dart';
 import 'package:folding_cell/folding_cell.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import '../repo.dart';
 
 class ParticularGameScreen extends StatefulWidget {
-  Game? g;
-  ParticularGameScreen({Key? key, required this.g}) : super(key: key);
+  final Game? g;
+  const ParticularGameScreen({Key? key, required this.g}) : super(key: key);
   @override
   _ParticularGameScreenState createState() => _ParticularGameScreenState();
 }
@@ -25,6 +27,17 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
   int totalBet = 0;
   final TextEditingController _controller = TextEditingController();
   int status = 0;
+  void showBlockingDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return const Center(
+              child: SpinKitWave(
+            color: Color(accent),
+            size: 50.0,
+          ));
+        });
+  }
   // print(g.toString())
 
   // @override
@@ -34,7 +47,6 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
   // }
 
   Widget front(GlobalKey<SimpleFoldingCellState> key, Player i) {
-    int index = all.indexOf(i);
     return Container(
       color: const Color(accent),
       alignment: Alignment.center,
@@ -366,8 +378,10 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
                         status = 1;
                       });
                     } else if (status == 1) {
+                      showBlockingDialog(context);
                       await Repository.updateGameSurvived(
                           widget.g?.gameNo ?? 0);
+                      Navigator.of(context).pop();
                       setState(() {
                         status = 2;
                       });

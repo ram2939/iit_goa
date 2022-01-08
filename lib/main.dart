@@ -63,6 +63,7 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   width: SizeConfig.safeBlockHorizontal * 50,
                   child: TextField(
+                    obscureText: true,
                     style: const TextStyle(
                       color: Colors.white,
                     ),
@@ -80,15 +81,17 @@ class LoginPage extends StatelessWidget {
                       child: const Text(
                         "Cancel",
                         style: TextStyle(
-                          color: Color(0xFFE256D3),
+                          color: Color(accent),
                         ),
                       ),
                     ),
                     TextButton(
                       onPressed: () async {
                         int alive = await Repository.getAlive();
+                        bool authFrontman =
+                            await Repository.checkFrontman(controller.text);
                         // if (controller.text == "squid123") {
-                        if (true) {
+                        if (authFrontman) {
                           while (Navigator.canPop(ctx)) {
                             Navigator.pop(ctx);
                           }
@@ -121,85 +124,105 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: const Color(background),
-          centerTitle: true,
-          title: const Text(
-            "SQUID GAME",
-            style: TextStyle(
-              fontSize: 38,
-              color: Color(accent),
-              fontFamily: 'Game Of Squids',
-            ),
+    return Container(
+      color: const Color(background),
+      child: ListView(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset('assets/images/Logo.png'),
+          // SvgPicture.asset(
+          //   "./assets/images/squid.svg",
+          //   height: SizeConfig.safeBlockVertical * 15,
+          // ),
+          SizedBox(
+            height: SizeConfig.blockSizeVertical * 10,
           ),
-        ),
-        body: ListView(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          // mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: SizeConfig.blockSizeVertical * 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    await showFrontmanDialog(context);
-                  },
-                  child: SvgPicture.asset(
-                    "./assets/images/left.svg",
-                    height: SizeConfig.safeBlockVertical * 50,
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await showFrontmanDialog(context);
+                },
+                child: SvgPicture.asset(
+                  "./assets/images/left.svg",
+                  height: SizeConfig.safeBlockVertical * 50,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    while (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    }
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const VIPLogin(),
-                      ),
-                    );
-                  },
-                  child: SvgPicture.asset(
-                    "./assets/images/right.svg",
-                    height: SizeConfig.safeBlockVertical * 50,
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Center(
-              child: SizedBox(
-                height: 50,
-                child: DefaultTextStyle(
-                  style: const TextStyle(
-                    fontSize: 25,
-                    color: Color(0xFFE256D3),
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Game Of Squids',
-                  ),
-                  child: AnimatedTextKit(
-                    repeatForever: true,
-                    animatedTexts: [
-                      FadeAnimatedText("CHOOSE"),
-                      FadeAnimatedText("YOUR"),
-                      FadeAnimatedText("SIDE"),
-                    ],
-                  ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  while (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VIPLogin(),
+                    ),
+                  );
+                },
+                child: SvgPicture.asset(
+                  "./assets/images/right.svg",
+                  height: SizeConfig.safeBlockVertical * 50,
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Center(
+            child: SizedBox(
+              height: 50,
+              child: DefaultTextStyle(
+                style: const TextStyle(
+                  fontSize: 25,
+                  color: Color(accent),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Game Of Squids',
+                ),
+                child: AnimatedTextKit(
+                  repeatForever: true,
+                  animatedTexts: [
+                    FadeAnimatedText("CHOOSE"),
+                    FadeAnimatedText("YOUR"),
+                    FadeAnimatedText("SIDE"),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+    // return SafeArea(
+    //   child: Scaffold(
+    //     appBar: AppBar(
+    //       elevation: 0.0,
+    //       backgroundColor: const Color(background),
+    //       centerTitle: true,
+    //       title: Container(
+    //         padding: const EdgeInsets.symmetric(
+    //           vertical: 10,
+    //         ),
+    //         child: SvgPicture.asset(
+    //           "./assets/images/squid.svg",
+    //           height: SizeConfig.safeBlockVertical * 15,
+    //         ),
+    //       ),
+    //       // title: const Text(
+    //       //   "SQUID GAME",
+    //       //   style: TextStyle(
+    //       //     fontSize: 38,
+    //       //     color: Color(accent),
+    //       //     fontFamily: 'Game Of Squids',
+    //       //   ),
+    //       // ),
+    //     ),
+    //     body: ,
+    //   ),
+    // );
   }
 }

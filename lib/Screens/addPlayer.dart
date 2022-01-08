@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
+import 'package:hackathon/models/player.dart';
 
 import '../repo.dart';
 
-class AddPlayer extends StatelessWidget {
-  AddPlayer({Key? key}) : super(key: key);
+class AddPlayer extends StatefulWidget {
+  Player? w;
+  AddPlayer({Key? key, this.w}) : super(key: key);
+
+  @override
+  State<AddPlayer> createState() => _AddPlayerState();
+}
+
+class _AddPlayerState extends State<AddPlayer> {
   final TextEditingController name = TextEditingController();
+
   final TextEditingController dob = TextEditingController();
+
   final TextEditingController occupation = TextEditingController();
+
   final TextEditingController address = TextEditingController();
+
   final TextEditingController debt = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.w != null) {
+      name.text = widget.w!.name ?? "";
+      dob.text = widget.w!.dob ?? "";
+      occupation.text = widget.w!.occupation ?? "";
+      address.text = widget.w!.address ?? "";
+      debt.text = widget.w!.debt.toString();
+    }
+  }
+
   InputDecoration text(String hint) {
     return InputDecoration(
       hintText: hint,
@@ -23,11 +48,11 @@ class AddPlayer extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(32.0)),
       ),
       enabledBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Color(0xFFE256D3), width: 1.0),
+        borderSide: BorderSide(color: Color(accent), width: 1.0),
         borderRadius: BorderRadius.all(Radius.circular(32.0)),
       ),
       focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Color(0xFFE256D3), width: 2.0),
+        borderSide: BorderSide(color: Color(accent), width: 2.0),
         borderRadius: BorderRadius.all(Radius.circular(32.0)),
       ),
     );
@@ -43,11 +68,11 @@ class AddPlayer extends StatelessWidget {
             color: Color(accent),
           ),
           backgroundColor: const Color(background),
-          title: const Text(
-            "Add Worker",
+          title: Text(
+            widget.w == null ? "Add" : "Edit" + " Worker",
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(accent),
               fontFamily: font,
               fontSize: 24,
@@ -146,17 +171,23 @@ class AddPlayer extends StatelessWidget {
                 height: SizeConfig.safeBlockVertical * 8,
                 width: SizeConfig.safeBlockHorizontal * 30,
                 alignment: Alignment.center,
-                child: const Text(
-                  "Add",
-                  style: TextStyle(
+                child: Text(
+                  widget.w == null ? "Add" : "Save",
+                  style: const TextStyle(
                     color: Color(background),
                     fontSize: 20,
                   ),
                 ),
               ),
               onPressed: () async {
-                await Repository.addPlayer(name.text, dob.text, address.text,
-                    occupation.text, double.tryParse(debt.text) ?? 0);
+                await Repository.addPlayer(
+                    name.text,
+                    dob.text,
+                    address.text,
+                    occupation.text,
+                    double.tryParse(debt.text) ?? 0,
+                    widget.w == null,
+                    oldName: widget.w!.name ?? "");
                 Navigator.of(context).pop();
               },
             ),
