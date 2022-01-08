@@ -27,7 +27,7 @@ class VipGamesScreen extends StatelessWidget {
             ),
             onPressed: () {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+                  MaterialPageRoute(builder: (context) => const LoginPage()));
               // while (Navigator.canPop(context)) {
               //   Navigator.pop(context);
               // }

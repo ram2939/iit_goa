@@ -67,6 +67,7 @@ class _AddWorkerState extends State<AddWorker> {
           ),
           backgroundColor: const Color(background),
           title: Text(
+            // ignore: prefer_adjacent_string_concatenation
             widget.w == null ? "Add" : "Edit" + " Worker",
             overflow: TextOverflow.ellipsis,
             maxLines: 1,

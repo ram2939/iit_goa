@@ -3,7 +3,6 @@ import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:hackathon/models/player.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:rubber/rubber.dart';
 import '../repo.dart';
 
 class VipPlayerStats extends StatelessWidget {

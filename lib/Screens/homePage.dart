@@ -4,7 +4,6 @@ import 'package:hackathon/Screens/workers.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:hackathon/models/player.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

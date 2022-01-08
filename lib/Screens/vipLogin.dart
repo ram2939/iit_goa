@@ -13,7 +13,7 @@ class VIPLogin extends StatefulWidget {
 }
 
 class _VIPLoginState extends State<VIPLogin> {
-  final CollectionReference _passwords_ref =
+  final CollectionReference _passwordsRef =
       FirebaseFirestore.instance.collection("vipPassword");
 
   Future<Future> showVIPDialog(BuildContext ctx, String name) async {
@@ -84,7 +84,7 @@ class _VIPLoginState extends State<VIPLogin> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        final snapshots = await _passwords_ref.get();
+                        final snapshots = await _passwordsRef.get();
                         // snapshots.forEach((element) {});
                         for (var i in snapshots.docs) {
                           if (name == i['name'] &&
