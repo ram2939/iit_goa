@@ -100,13 +100,18 @@ class _WorkersState extends State<Workers> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  i.name ?? " ",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: font,
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  width: SizeConfig.safeBlockHorizontal * 50,
+                  child: Text(
+                    i.name ?? " ",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: font,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Expanded(child: Container()),

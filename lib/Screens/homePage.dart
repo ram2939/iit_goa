@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ListTile(
                   leading: const Icon(
-                    Icons.mail_outline_outlined,
+                    Icons.document_scanner,
                     color: Color(background),
                   ),
                   onTap: () async {
@@ -261,9 +261,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                             isRepeatingAnimation: true,
-                            onTap: () {
-                              print("Tap Event");
-                            },
+                            onTap: () {},
                           ),
                         ),
                         SizedBox(
@@ -279,8 +277,8 @@ class _HomePageState extends State<HomePage> {
                               repeatForever: true,
                               animatedTexts: [
                                 FadeAnimatedText("Total: $total"),
-                                FadeAnimatedText("Alive: ${alive}"),
-                                FadeAnimatedText("Dead: $dead"),
+                                FadeAnimatedText("Alive: $alive"),
+                                FadeAnimatedText("Dead: ${import ? 0 : dead}"),
                               ],
                             ),
                           ),

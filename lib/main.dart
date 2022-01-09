@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:hackathon/Screens/vipLogin.dart';
 import 'package:hackathon/Utility/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,11 +8,14 @@ import 'package:hackathon/Utility/sizeConfig.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hackathon/repo.dart';
+
 import 'Screens/homePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (_) {
       runApp(
@@ -33,7 +37,14 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(background),
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: AnimatedSplashScreen(
+        splashIconSize: 700,
+        duration: 6000,
+        backgroundColor: Colors.black54,
+        splash: "assets/images/squid3.gif",
+        nextScreen: const LoginPage(),
+        splashTransition: SplashTransition.fadeTransition,
+      ),
     );
   }
 }

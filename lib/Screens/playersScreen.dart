@@ -91,13 +91,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  i.name ?? " ",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: font,
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  width: SizeConfig.safeBlockHorizontal * 50,
+                  child: Text(
+                    i.name ?? " ",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: font,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
@@ -143,11 +148,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
               ),
             ),
           ),
-          Text(
-            i.address ?? "",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18.0,
+          Container(
+            height: SizeConfig.safeBlockVertical * 4,
+            child: Text(
+              i.address ?? "",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
             ),
           ),
           Container(
