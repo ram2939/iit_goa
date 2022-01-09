@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   void showBlockingDialog(BuildContext context) {
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (ctx) {
           return const Center(
@@ -232,8 +233,8 @@ class _HomePageState extends State<HomePage> {
 
             if (snapshot.connectionState == ConnectionState.waiting) {}
             if (snapshot.hasData) {
-              final alive = snapshot.data!.docs.length;
-              final dead = total - alive;
+              int alive = snapshot.data!.docs.length;
+              int dead = total - alive;
               return ListView(children: [
                 Container(
                   margin: EdgeInsets.symmetric(
@@ -250,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                             repeatForever: true,
                             animatedTexts: [
                               ColorizeAnimatedText(
-                                'Stake: \$${f.format((dead) * 10000000)}',
+                                'Stake: \$${import ? 0 : f.format((dead) * 10000000)}',
                                 textStyle: const TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -278,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                               repeatForever: true,
                               animatedTexts: [
                                 FadeAnimatedText("Total: $total"),
-                                FadeAnimatedText("Alive: ${widget.alive}"),
+                                FadeAnimatedText("Alive: ${alive}"),
                                 FadeAnimatedText("Dead: $dead"),
                               ],
                             ),

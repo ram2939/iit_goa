@@ -30,6 +30,7 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
   int deadBet = 0;
   void showBlockingDialog(BuildContext context) {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (ctx) {
           return const Center(
@@ -205,14 +206,18 @@ class _ParticularGameScreenState extends State<ParticularGameScreen> {
           color: Color(accent),
         ),
         backgroundColor: const Color(background),
-        title: Expanded(
-          child: Text(
-            widget.g?.name ?? "abc",
-            maxLines: 1,
-            overflow: TextOverflow.clip,
-            style: const TextStyle(
-              fontFamily: font,
-              color: Color(accent),
+        title: Container(
+          width: SizeConfig.blockSizeHorizontal * 80,
+          child: FittedBox(
+            fit: BoxFit.fill,
+            child: Text(
+              widget.g?.name ?? "abc",
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                fontFamily: font,
+                color: Color(accent),
+              ),
             ),
           ),
         ),
